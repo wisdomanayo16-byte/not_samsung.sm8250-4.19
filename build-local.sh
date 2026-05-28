@@ -154,9 +154,9 @@ echo -e "\n${GREEN}Starting compilation...${NC}"
 
 rm -rf out/arch/arm64/boot #ok
 
+make $MAKE_ARGS CONFIG_KSU=m modules
 make $MAKE_ARGS dtbo.img
-make $MAKE_ARGS Image.gz
-
+make $MAKE_ARGS CONFIG_KSU=y Image.gz
 
 # Post build checks
 if [ ! -f "$BOOT_DIR/Image.gz" ]; then
@@ -189,6 +189,8 @@ git clone -q -b "$AK3_BRANCH" "$AK3_REPO" AnyKernel3 || exit 1
 
 cp "$BOOT_DIR/dtbo.img" AnyKernel3/
 cp "$BOOT_DIR/Image.gz" AnyKernel3/
+mkdir -p AnyKernel3/lkm
+cp "$OUT_DIR/drivers/kernelsu/ksu.ko" AnyKernel3/lkm/
 cp "$BOOT_DIR/kona.dtb" AnyKernel3/
 
 # remove older builds

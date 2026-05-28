@@ -65,14 +65,20 @@ make -j$(nproc --all) O=out ARCH=arm64 \
     CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm \
     OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip \
     CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
-    LLVM=1 LLVM_IAS=1 dtbo.img
-    
+    LLVM=1 LLVM_IAS=1 CONFIG_KSU=m modules
+
 make -j$(nproc --all) O=out ARCH=arm64 \
     CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm \
     OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip \
     CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
-    LLVM=1 LLVM_IAS=1 Image
-    
+    LLVM=1 LLVM_IAS=1 dtbo.img
+
+make -j$(nproc --all) O=out ARCH=arm64 \
+    CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar NM=llvm-nm \
+    OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip \
+    CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
+    LLVM=1 LLVM_IAS=1 CONFIG_KSU=y Image
+
 if [ -f "$BOOT_DIR/Image" ]; then
     echo -e "${GREEN}Kernel Image found!${NC}"
     
@@ -103,6 +109,8 @@ echo -e "Preparing zip...\n"
 
 cp "$BOOT_DIR/dtbo.img" AnyKernel3/dtbo.img
 cp "$BOOT_DIR/Image" AnyKernel3/Image
+mkdir -p AnyKernel3/lkm
+cp "$OUT_DIR/drivers/kernelsu/ksu.ko" AnyKernel3/lkm/ksu.ko
 cp "$BOOT_DIR/kona.dtb" AnyKernel3/kona.dtb
 
 cd AnyKernel3
